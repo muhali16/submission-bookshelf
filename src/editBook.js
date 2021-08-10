@@ -1,8 +1,17 @@
-/* eslint-disable max-len */
+
+const books = require('./book');
 const editBooks = (request, h) => {
   const {id} = request.params;
-  const {name, year, author, summary, publisher, pageCount, readPage, reading} = request.payload;
-
+  const {
+    name,
+    year,
+    author,
+    summary,
+    publisher,
+    pageCount,
+    readPage,
+    reading,
+  } = request.payload;
   if (!name) {
     const response = h.response({
       status: 'fail',
@@ -13,17 +22,28 @@ const editBooks = (request, h) => {
   } else if (readPage > pageCount) {
     const response = h.response({
       status: 'fail',
-      message: 'Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount',
+      message:
+      'Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount',
     });
     response.code(400);
     return response;
   }
-
+  const finished = pageCount === readPage;
   const updatedAt = new Date().toISOString();
   const index = books.findIndex((book) => book.id === id);
   if (index !== -1) {
     books[index] = {
-      ...books[index], name, year, author, summary, publisher, pageCount, readPage, reading, updatedAt,
+      ...books[index],
+      name,
+      year,
+      author,
+      summary,
+      publisher,
+      pageCount,
+      readPage,
+      finished,
+      reading,
+      updatedAt,
     };
     const response = h.response({
       status: 'success',
